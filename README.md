@@ -33,7 +33,24 @@ docker-compose.yml
 requirements.txt
 ```
 
-## Getting Started
+## Deployment
+
+### Proxmox Server (Recommended)
+Deploy to your Proxmox server with automated setup:
+```bash
+chmod +x deploy-proxmox.sh
+sudo ./deploy-proxmox.sh
+```
+
+This will:
+- Install Docker and dependencies
+- Create systemd service with auto-start
+- Set up persistent data storage
+- Configure the application
+
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for detailed Proxmox deployment guide, including LXC container setup, management commands, backup/restore procedures, and troubleshooting.
+
+### Local Development
 1. Copy `.env.example` to `.env` and fill in:
    - `XRPL_WS_URL` (e.g., `wss://s1.ripple.com/`)
    - Wallet addresses (comma-delimited)
@@ -43,6 +60,17 @@ requirements.txt
    docker compose up --build
    ```
 3. MCP endpoint available at `http://localhost:8000`. Configure Claude Desktop to use that URL plus the API key.
+
+## Management
+
+Use the control script for easy management:
+```bash
+sudo ./xrp-tracker-ctl.sh status    # Check service status
+sudo ./xrp-tracker-ctl.sh logs      # View logs
+sudo ./xrp-tracker-ctl.sh restart   # Restart service
+sudo ./xrp-tracker-ctl.sh backup    # Create backup
+sudo ./xrp-tracker-ctl.sh help      # Show all commands
+```
 
 ## MCP Tools
 - `GET /dashboard` – summary metrics + recent transactions and alert digest
