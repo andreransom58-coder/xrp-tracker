@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from .auth import verify_api_key
 from .db import init_db
@@ -9,6 +13,10 @@ from .services.tx_service import TransactionService
 
 app = FastAPI(title="XRP Monitor MCP API")
 
+# Mount static files
+static_path = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+
 dashboard_service = DashboardService()
 tx_service = TransactionService()
 alert_service = AlertService()
@@ -17,6 +25,12 @@ alert_service = AlertService()
 @app.on_event("startup")
 def startup():
     init_db()
+
+
+@app.get("/")
+def root():
+    """Serve the professional UI dashboard"""
+    return FileResponse(str(static_path / "index.html"))
 
 
 @app.get("/dashboard", response_model=DashboardResponse)
